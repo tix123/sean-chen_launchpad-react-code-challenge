@@ -13,7 +13,7 @@ import Box from '@mui/material/Box';
 // import pages
 import Home from './components/Home'
 import Universities from './components/Universities'
-
+import Postal from './components/Postal'
 
 
 function App() {
@@ -60,7 +60,7 @@ function App() {
                     <Universities />
                 </TabPanel>
                 <TabPanel value="3" sx={tabPanelStyle}>
-
+                    <Postal />
                 </TabPanel>
             </TabContext>
         </Box>
