@@ -4,6 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { useSelector, useDispatch } from 'react-redux'
 import { setPostList } from '../store/slices/homeSlice'
 import axios from 'axios';
+import InputForm from './InputForm';
 
 // import material UI components
 import Box from '@mui/material/Box';
@@ -23,6 +24,16 @@ import IconButton from '@mui/material/IconButton';
 
 const Home = () => {
 
+    const [dialogOpen, setDialogOpen] = useState(false);
+
+    const handleDialogOpen = () => {
+        setDialogOpen(true);
+    }
+
+    const handleDialogClose = () => {
+        setDialogOpen(false);
+    }
+
     const postList = useSelector(state => state.home.postList);
     const dispatch = useDispatch();
 
@@ -35,15 +46,19 @@ const Home = () => {
 
     // Get post list and set data to Redux
     const fetchPostList = async () => {
-        const res = await axios
+        await axios
             .get("https://jsonplaceholder.typicode.com/posts?_start=0&_limit=20")
+            .then(function (res) {
+                // handle success
+                if (res.status == StatusCodes.OK) {
+                    dispatch(setPostList(res.data))
+                }
+            })
             .catch(function (error) {
                 // handle error
                 console.log(error);
             });
-        if (res.status == StatusCodes.OK) {
-            dispatch(setPostList(res.data))
-        }
+
     }
 
     const titleStyle = {
@@ -69,13 +84,17 @@ const Home = () => {
 
     return (
         <Box sx={{ width: '100%' }}>
+
+            {/* Banner and title */}
             <Box sx={{ width: '100%', position: "relative" }}>
                 <img src={BannerPicture} alt="banner-picture" style={{ width: "100%" }} />
                 <Typography variant="h1" component="div" sx={titleStyle}>
                     HOME
                 </Typography>
             </Box>
-            <Box sx={{ margin: "10px" }}>
+
+            {/* Search field and add button */}
+            <Box sx={{ width: '90%', margin: "20px auto" }}>
                 <Grid container spacing={2}>
                     <Grid item>
                         <TextField
@@ -86,14 +105,16 @@ const Home = () => {
                         />
                     </Grid>
                     <Grid item>
-                        <Button variant="contained" sx={addButtonStyle} >
+                        <Button variant="contained" sx={addButtonStyle} onClick={() => handleDialogOpen()}>
                             Add a new post
                         </Button>
                     </Grid>
                 </Grid>
             </Box>
+
+            {/* Post grid */}
             <Box sx={{ width: '90%', margin: "20px auto" }}>
-                <Grid container spacing={2}>
+                <Grid container spacing={3}>
                     {postList.map((post, index) => {
                         return (
                             <Grid item xs={3} key={index}>
@@ -148,6 +169,14 @@ const Home = () => {
                     })}
                 </Grid>
             </Box>
+
+            {/* the modal window  to add a post */}
+            <InputForm
+                dialogTitle="ADD A NEW POST"
+                dialogOpen={dialogOpen}
+                handleDialogClose={handleDialogClose}
+                isAddPost={true}
+            />
         </Box>
     )
 }
