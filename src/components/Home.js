@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import BannerPicture from '../images/sea.jpg'
-import { StatusCodes } from 'http-status-codes';
+import { StatusCodes, getReasonPhrase } from 'http-status-codes';
 import { useSelector, useDispatch } from 'react-redux'
 import { setPostList } from '../store/slices/homeSlice'
+import { setMessage, setSeverity } from '../store/slices/alertSlice'
 import axios from 'axios';
 import InputForm from './InputForm';
+import NoticeBar from './NoticeBar';
 
 // import material UI components
 import Box from '@mui/material/Box';
@@ -24,6 +26,7 @@ import IconButton from '@mui/material/IconButton';
 
 const Home = () => {
 
+    // input form open/close control
     const [dialogOpen, setDialogOpen] = useState(false);
 
     const handleDialogOpen = () => {
@@ -34,7 +37,19 @@ const Home = () => {
         setDialogOpen(false);
     }
 
+    // notice bar control
+    const [barOpen, setBarOpen] = useState(false)
+
+    const handleBarOpen = () => {
+        setBarOpen(true)
+    }
+
+    const handleBarClose = () => {
+        setBarOpen(false)
+    }
+
     const postList = useSelector(state => state.home.postList);
+    const alert = useSelector(state => state.alert);
     const dispatch = useDispatch();
 
     console.log("postList", postList)
@@ -52,13 +67,46 @@ const Home = () => {
                 // handle success
                 if (res.status == StatusCodes.OK) {
                     dispatch(setPostList(res.data))
+                } else {
+                    let reason = getReasonPhrase(res.status)
+                    dispatch(setMessage(reason));
+                    dispatch(setSeverity("error"));
+                    handleBarOpen();
                 }
             })
             .catch(function (error) {
                 // handle error
                 console.log(error);
+                dispatch(setMessage(error.message));
+                dispatch(setSeverity("error"));
+                handleBarOpen();
             });
+    }
 
+    const handleSearch = async (id) => {
+        await axios
+            .get("https://jsonplaceholder.typicode.com/posts/" + id)
+            .then(function (res) {
+                // handle success
+                console.log("res", res);
+                if (res.status == StatusCodes.OK) {
+                    let newList = [];
+                    newList.push(res.data);
+                    dispatch(setPostList(newList))
+                } else {
+                    let reason = getReasonPhrase(res.status)
+                    dispatch(setMessage(reason));
+                    dispatch(setSeverity("error"));
+                    handleBarOpen();
+                }
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+                dispatch(setMessage(error.message));
+                dispatch(setSeverity("error"));
+                handleBarOpen();
+            });
     }
 
     const titleStyle = {
@@ -102,6 +150,7 @@ const Home = () => {
                             InputProps={{
                                 startAdornment: <InputAdornment position="start"><SearchIcon /></InputAdornment>,
                             }}
+                            onChange={(e) => handleSearch(e.target.value)}
                         />
                     </Grid>
                     <Grid item>
@@ -177,6 +226,15 @@ const Home = () => {
                 handleDialogClose={handleDialogClose}
                 isAddPost={true}
             />
+
+            {/* Notice bar */}
+            <NoticeBar
+                barOpen={barOpen}
+                handleBarClose={handleBarClose}
+                alertMessage={alert.message}
+                alertSeverity={alert.severity}
+            />
+
         </Box>
     )
 }

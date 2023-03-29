@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { StatusCodes, getReasonPhrase } from 'http-status-codes';
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { addPostList } from '../store/slices/homeSlice'
+import { setMessage, setSeverity } from '../store/slices/alertSlice'
 import NoticeBar from './NoticeBar';
 import axios from 'axios';
 
@@ -28,10 +29,7 @@ const InputForm = (props) => {
         setBarOpen(false)
     }
 
-    // alert message setup
-    const [alertMessage, setAlertMessage] = useState("");
-    const [alertSeverity, setAlertSeverity] = useState("error");
-
+    const alert = useSelector(state => state.alert);
     const dispatch = useDispatch();
 
     const handleSubmit = async (e) => {
@@ -55,20 +53,20 @@ const InputForm = (props) => {
                     if (res.status == StatusCodes.CREATED) {
                         formJson.id = res.data.id;
                         dispatch(addPostList(formJson));
-                        setAlertMessage("Post Added Successfully");
-                        setAlertSeverity("success");
+                        dispatch(setMessage("Post Added Successfully"));
+                        dispatch(setSeverity("success"));
                         props.handleDialogClose();
                     } else {
                         let reason = getReasonPhrase(res.status)
-                        setAlertMessage(reason);
-                        setAlertSeverity("error");
+                        dispatch(setMessage(reason));
+                        dispatch(setSeverity("error"));
                     }
                 })
                 .catch(function (error) {
                     // handle error
                     console.log(error);
-                    setAlertMessage(error.message);
-                    setAlertSeverity("error");
+                    dispatch(setMessage(error.message));
+                    dispatch(setSeverity("error"));
                 })
                 .finally(function () {
                     // always executed
@@ -129,8 +127,8 @@ const InputForm = (props) => {
             <NoticeBar
                 barOpen={barOpen}
                 handleBarClose={handleBarClose}
-                alertMessage={alertMessage}
-                alertSeverity={alertSeverity}
+                alertMessage={alert.message}
+                alertSeverity={alert.severity}
             />
 
         </Box>
