@@ -1,24 +1,24 @@
-import * as React from 'react';
+import * as React from "react";
 
 // import material UI components
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import TabContext from '@mui/lab/TabContext';
-import TabPanel from '@mui/lab/TabPanel';
-import Box from '@mui/material/Box';
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import TabContext from "@mui/lab/TabContext";
+import TabPanel from "@mui/lab/TabPanel";
+import Box from "@mui/material/Box";
 
 // import pages
-import Home from './components/Home'
-import Universities from './components/Universities'
-import Postal from './components/Postal'
+import Home from "./components/Home"
+import Universities from "./components/Universities"
+import Postal from "./components/Postal"
 
 
 function App() {
 
-    const [value, setValue] = React.useState('1');
+    const [value, setValue] = React.useState("1");
 
     const changePage = (page) => {
         setValue(page);
@@ -30,7 +30,7 @@ function App() {
 
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: "100%" }}>
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
