@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import BannerPicture from "../images/sea.jpg"
 import { StatusCodes, getReasonPhrase } from "http-status-codes";
 import { useSelector, useDispatch } from "react-redux"
-import { setPostList } from "../store/slices/homeSlice"
+import { setPostList, deletePost } from "../store/slices/homeSlice"
 import { setMessage, setSeverity } from "../store/slices/alertSlice"
 import axios from "axios";
 import InputForm from "./InputForm";
@@ -74,7 +74,7 @@ const Home = () => {
             .get(Settings.POST_SERVER_URL + "?_start=0&_limit=20")
             .then(function (res) {
                 // handle success
-                if (res.status == StatusCodes.OK) {
+                if (res.status === StatusCodes.OK) {
                     dispatch(setPostList(res.data))
                 } else {
                     let reason = getReasonPhrase(res.status)
@@ -119,10 +119,15 @@ const Home = () => {
             .get(Settings.POST_SERVER_URL + "/" + id)
             .then(function (res) {
                 // handle success
-                if (res.status == StatusCodes.OK) {
-                    let newList = [];
-                    newList.push(res.data);
-                    dispatch(setPostList(newList))
+                if (res.status === StatusCodes.OK) {
+                    // If the data is an array, set it to redux
+                    if (Array.isArray(res.data)) {
+                        dispatch(setPostList(res.data))
+                    } else {
+                        let newList = [];
+                        newList.push(res.data);
+                        dispatch(setPostList(newList))
+                    }
                 } else {
                     let reason = getReasonPhrase(res.status)
                     dispatch(setMessage(reason));
@@ -135,6 +140,34 @@ const Home = () => {
                 console.log(error);
                 dispatch(setMessage(error.message));
                 dispatch(setSeverity(Settings.ALERT_ERROR));
+                handleBarOpen();
+            });
+    }
+
+    // Delete function
+    const handleDelete = async (id) => {
+        await axios
+            .delete(Settings.POST_SERVER_URL + "/" + id)
+            .then(function (res) {
+                // if deleted successfully, remove from the redux state
+                if (res.status === StatusCodes.OK) {
+                    dispatch(deletePost(id));
+                    dispatch(setMessage(Settings.DELETE_SUCCESS));
+                    dispatch(setSeverity(Settings.ALERT_SUCCESS));
+                } else {
+                    let reason = getReasonPhrase(res.status)
+                    dispatch(setMessage(reason));
+                    dispatch(setSeverity(Settings.ALERT_ERROR));
+                }
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+                dispatch(setMessage(error.message));
+                dispatch(setSeverity(Settings.ALERT_ERROR));
+            })
+            .finally(function () {
+                // always executed
                 handleBarOpen();
             });
     }
@@ -240,7 +273,7 @@ const Home = () => {
                                             <IconButton onClick={() => handleEdit(post)}>
                                                 <EditIcon />
                                             </IconButton>
-                                            <IconButton>
+                                            <IconButton onClick={() => handleDelete(post.id)}>
                                                 <DeleteIcon />
                                             </IconButton>
                                         </Stack>

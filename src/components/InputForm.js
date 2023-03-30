@@ -46,7 +46,7 @@ const InputForm = (props) => {
             .put(Settings.POST_SERVER_URL + "/" + props.postId, postObj)
             .then(function (res) {
                 // if edited successfully, update the redux state
-                if (res.status == StatusCodes.OK) {
+                if (res.status === StatusCodes.OK) {
                     dispatch(editPost(res.data));
                     dispatch(setMessage(Settings.EDIT_SUCCESS));
                     dispatch(setSeverity(Settings.ALERT_SUCCESS));
@@ -82,7 +82,7 @@ const InputForm = (props) => {
             .post(Settings.POST_SERVER_URL, postObj)
             .then(function (res) {
                 // if created successfully, add to redux state
-                if (res.status == StatusCodes.CREATED) {
+                if (res.status === StatusCodes.CREATED) {
                     dispatch(addPost(res.data));
                     dispatch(setMessage(Settings.ADD_SUCCESS));
                     dispatch(setSeverity(Settings.ALERT_SUCCESS));
