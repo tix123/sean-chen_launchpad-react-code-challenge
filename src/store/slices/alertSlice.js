@@ -1,7 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit"
 
 export const alertSlice = createSlice({
-    name: 'alert',
+    name: "alert",
     initialState: {
         message: "",
         severity: "error",
