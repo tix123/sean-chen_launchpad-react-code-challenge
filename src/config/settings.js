@@ -1,6 +1,8 @@
 
 // Server URLs
 export const POST_SERVER_URL = "https://jsonplaceholder.typicode.com/posts"
+export const COUNTRY_SERVER_URL = "https://countriesnow.space/api/v0.1/countries"
+export const UNIVERSITY_SERVER_URL = "http://universities.hipolabs.com/search"
 
 // Messages
 export const ADD_SUCCESS = "Post Added Successfully"
