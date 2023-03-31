@@ -7,7 +7,7 @@ import { setMessage, setSeverity } from "../store/slices/alertSlice"
 import axios from "axios";
 import * as Settings from "../config/settings"
 import NoticeBar from "./NoticeBar";
-import {countryConvert} from "../services/universitiesService"
+import { countryConvert } from "../services/universitiesService"
 
 // import material UI components
 import Box from "@mui/material/Box";
@@ -20,6 +20,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
+import Pagination from '@mui/material/Pagination';
 
 
 const Universities = () => {
@@ -41,7 +42,12 @@ const Universities = () => {
     const alert = useSelector(state => state.alert);
     const dispatch = useDispatch();
 
-    console.log("universityList", universityList)
+    // selected univesity list for current page
+    const [selectedList, setSelectedList] = useState([])
+
+    // State for page selector
+    const [page, setPage] = useState(1)
+    const [count, setCount] = useState(1)
 
     // Get country list (only once)
     useEffect(() => {
@@ -55,8 +61,7 @@ const Universities = () => {
             .then(function (res) {
                 // handle success
                 if (res.status === StatusCodes.OK) {
-                    // sort the list
-                    res.data.data.sort(sortMethod);
+                    res.data.data.sort(sortMethod);   // sort the list
                     dispatch(setCountryList(res.data.data))
                 } else {
                     let reason = getReasonPhrase(res.status)
@@ -85,6 +90,27 @@ const Universities = () => {
                     if (res.status === StatusCodes.OK) {
                         res.data.sort(sortMethod)
                         dispatch(setUniversityList(res.data))
+
+                        // If the number of data less than data per page
+                        if (Settings.DATA_PER_PAGE >= res.data.length) {
+                            setSelectedList(res.data)
+                        } else {
+                            setSelectedList(res.data.slice(0, Settings.DATA_PER_PAGE))
+                        }
+
+                        // Set page to the first page
+                        setPage(1)
+
+                        // Set total page
+                        setCount(Math.ceil(res.data.length / Settings.DATA_PER_PAGE))
+
+                        // If no result, show notice bar
+                        if (res.data.length === 0) {
+                            dispatch(setMessage(Settings.NO_RESULT));
+                            dispatch(setSeverity(Settings.ALERT_WARNING));
+                            handleBarOpen();
+                        }
+
                     } else {
                         let reason = getReasonPhrase(res.status)
                         dispatch(setMessage(reason));
@@ -99,6 +125,16 @@ const Universities = () => {
                     dispatch(setSeverity(Settings.ALERT_ERROR));
                     handleBarOpen();
                 });
+        }
+    }
+
+    const handlePageChange = (event, value) => {
+        setPage(value)
+        // Set data for this page
+        if (value * Settings.DATA_PER_PAGE <= universityList.length) {
+            setSelectedList(universityList.slice((value - 1) * Settings.DATA_PER_PAGE, value * Settings.DATA_PER_PAGE))
+        } else {
+            setSelectedList(universityList.slice((value - 1) * Settings.DATA_PER_PAGE, universityList.length))
         }
     }
 
@@ -160,10 +196,27 @@ const Universities = () => {
                 </FormControl>
             </Box>
 
+            {/* Top page Selector */}
+            {Settings.DATA_PER_PAGE >= universityList.length ? (
+                <></>
+            ) : (
+                <Box sx={{ width: "100%", display: "flex", justifyContent: "center", margin: "20px 0" }}>
+                    <Pagination
+                        count={count}
+                        page={page}
+                        size="large"
+                        variant="outlined"
+                        shape="rounded"
+                        color="primary"
+                        onChange={handlePageChange}
+                    />
+                </Box>
+            )}
+
             {/* Post grid */}
             <Box sx={{ width: "90%", margin: "20px auto" }}>
                 <Grid container spacing={4}>
-                    {universityList.map((university, index) => {
+                    {selectedList.map((university, index) => {
                         return (
                             <Grid item lg={4} md={6} xs={12} key={index}>
                                 <Card sx={{ background: "#eee" }}>
@@ -213,9 +266,6 @@ const Universities = () => {
                                                 </Typography>
                                             )
                                         })}
-
-
-
                                     </CardContent>
                                 </Card>
                             </Grid>
@@ -223,6 +273,23 @@ const Universities = () => {
                     })}
                 </Grid>
             </Box>
+
+            {/* Bottom page Selector */}
+            {Settings.DATA_PER_PAGE >= universityList.length ? (
+                <></>
+            ) : (
+                <Box sx={{ width: "100%", display: "flex", justifyContent: "center", margin: "20px 0" }}>
+                    <Pagination
+                        count={count}
+                        page={page}
+                        size="large"
+                        variant="outlined"
+                        shape="rounded"
+                        color="primary"
+                        onChange={handlePageChange}
+                    />
+                </Box>
+            )}
 
             {/* Notice bar */}
             <NoticeBar
