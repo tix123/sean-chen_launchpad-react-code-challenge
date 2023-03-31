@@ -9,13 +9,19 @@ import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 
 const NavBar = () => {
+
+    const titleStyle ={
+        fontWeight: "bold",
+        display: { xs: "none", md: "block" }
+    }
+
     return (
         <AppBar position="fixed">
             <Toolbar>
                 <Grid container justifyContent={"space-between"}>
                     <Grid item>
-                        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
-                            Code Challenge
+                        <Typography variant="h6" component="div" sx={titleStyle}>
+                            Sean Chen's Code Challenge
                         </Typography>
                     </Grid>
                     <Grid item>
