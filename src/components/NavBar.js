@@ -14,8 +14,8 @@ const NavBar = () => {
             <Toolbar>
                 <Grid container justifyContent={"space-between"}>
                     <Grid item>
-                        <Typography variant="h6" component="div">
-                            Sean Chen's Code Challenge
+                        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+                            Code Challenge
                         </Typography>
                     </Grid>
                     <Grid item>

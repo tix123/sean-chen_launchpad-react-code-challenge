@@ -181,7 +181,6 @@ const Home = () => {
         color: "#fff",
         transform: "translateX(-50%) translateY(-50%)",
         letterSpacing: "10px",
-        fontSize: "130px"
     }
 
     // CSS style for the add button
@@ -232,7 +231,7 @@ const Home = () => {
                 <Grid container spacing={3}>
                     {postList.map((post, index) => {
                         return (
-                            <Grid item xs={3} key={index}>
+                            <Grid item lg={3} md={4} sm={6} xs={12} key={index}>
                                 <Card sx={{ background: "#eee" }}>
                                     <CardContent sx={{ height: 400 }}>
                                         <Stack spacing={5} direction="row">
