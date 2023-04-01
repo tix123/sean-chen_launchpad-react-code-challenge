@@ -8,6 +8,7 @@ import axios from "axios";
 import InputForm from "../utils/InputForm";
 import NoticeBar from "../utils/NoticeBar";
 import * as Settings from "../../config/settings"
+import * as Styles from "../../styles/styles"
 
 // import material UI components
 import Box from "@mui/material/Box";
@@ -172,36 +173,13 @@ const Home = () => {
             });
     }
 
-    // CSS style for title
-    const titleStyle = {
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        zIndex: 1,
-        color: "#fff",
-        transform: "translateX(-50%) translateY(-50%)",
-        letterSpacing: "10px",
-    }
-
-    // CSS style for the add button
-    const addButtonStyle = {
-        height: "100%",
-        fontSize: "20px",
-    }
-
-    // CSS style for the title of items
-    const itemStyle = {
-        fontSize: 12,
-        fontStyle: "italic",
-    }
-
     return (
         <Box sx={{ width: "100%" }}>
 
             {/* Banner and title */}
             <Box sx={{ width: "100%", position: "relative" }}>
                 <img src={BannerPicture} alt="banner" style={{ width: "100%" }} />
-                <Typography variant="h1" component="div" sx={titleStyle}>
+                <Typography variant="h1" component="div" sx={Styles.titleStyle}>
                     HOME
                 </Typography>
             </Box>
@@ -219,7 +197,7 @@ const Home = () => {
                         />
                     </Grid>
                     <Grid item>
-                        <Button variant="contained" sx={addButtonStyle} onClick={() => handleAdd()}>
+                        <Button variant="contained" sx={Styles.buttonStyle} onClick={() => handleAdd()}>
                             Add a new post
                         </Button>
                     </Grid>
@@ -236,7 +214,7 @@ const Home = () => {
                                     <CardContent sx={{ height: 400 }}>
                                         <Stack spacing={5} direction="row">
                                             <Box>
-                                                <Typography sx={itemStyle} color="text.secondary">
+                                                <Typography sx={Styles.itemStyle} color="text.secondary">
                                                     POST ID
                                                 </Typography>
                                                 <Typography variant="h4" gutterBottom>
@@ -244,7 +222,7 @@ const Home = () => {
                                                 </Typography>
                                             </Box>
                                             <Box>
-                                                <Typography sx={itemStyle} color="text.secondary">
+                                                <Typography sx={Styles.itemStyle} color="text.secondary">
                                                     USER ID
                                                 </Typography>
                                                 <Typography variant="h4" gutterBottom>
@@ -253,14 +231,14 @@ const Home = () => {
                                             </Box>
                                         </Stack>
                                         <br />
-                                        <Typography sx={itemStyle} color="text.secondary">
+                                        <Typography sx={Styles.itemStyle} color="text.secondary">
                                             TITLE
                                         </Typography>
                                         <Typography variant="body1" gutterBottom>
                                             {post.title}
                                         </Typography>
                                         <br />
-                                        <Typography sx={itemStyle} color="text.secondary">
+                                        <Typography sx={Styles.itemStyle} color="text.secondary">
                                             BODY
                                         </Typography>
                                         <Typography variant="body1" gutterBottom>
