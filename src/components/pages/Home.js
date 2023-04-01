@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import BannerPicture from "../images/sea.jpg"
+import BannerPicture from "../../images/sea.jpg"
 import { StatusCodes, getReasonPhrase } from "http-status-codes";
 import { useSelector, useDispatch } from "react-redux"
-import { setPostList, deletePost } from "../store/slices/homeSlice"
-import { setMessage, setSeverity } from "../store/slices/alertSlice"
+import { setPostList, deletePost } from "../../store/slices/homeSlice"
+import { setMessage, setSeverity } from "../../store/slices/alertSlice"
 import axios from "axios";
-import InputForm from "./InputForm";
-import NoticeBar from "./NoticeBar";
-import * as Settings from "../config/settings"
+import InputForm from "../utils/InputForm";
+import NoticeBar from "../utils/NoticeBar";
+import * as Settings from "../../config/settings"
 
 // import material UI components
 import Box from "@mui/material/Box";

@@ -1,9 +1,9 @@
 import * as React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import NavBar from "./components/NavBar"
-import Home from "./components/Home"
-import Universities from "./components/Universities"
-import Postal from "./components/Postal"
+import NavBar from "./components/navBar/NavBar"
+import Home from "./components/pages/Home"
+import Universities from "./components/pages/Universities"
+import Postal from "./components/pages/Postal"
 import Toolbar from "@mui/material/Toolbar";
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
 

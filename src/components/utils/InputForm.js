@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { StatusCodes, getReasonPhrase } from "http-status-codes";
 import { useSelector, useDispatch } from "react-redux"
-import { addPost, editPost } from "../store/slices/homeSlice"
-import { setMessage, setSeverity } from "../store/slices/alertSlice"
+import { addPost, editPost } from "../../store/slices/homeSlice"
+import { setMessage, setSeverity } from "../../store/slices/alertSlice"
 import NoticeBar from "./NoticeBar";
 import axios from "axios";
-import * as Settings from "../config/settings"
+import * as Settings from "../../config/settings"
 
 // import material UI components
 import Dialog from "@mui/material/Dialog";

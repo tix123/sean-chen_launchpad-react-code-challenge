@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import BannerPicture from "../images/universities.jpg"
+import BannerPicture from "../../images/universities.jpg"
 import { StatusCodes, getReasonPhrase } from "http-status-codes";
 import { useSelector, useDispatch } from "react-redux"
-import { setCountryList, setUniversityList } from "../store/slices/universitiesSlice"
-import { setMessage, setSeverity } from "../store/slices/alertSlice"
+import { setCountryList, setUniversityList } from "../../store/slices/universitiesSlice"
+import { setMessage, setSeverity } from "../../store/slices/alertSlice"
 import axios from "axios";
-import * as Settings from "../config/settings"
-import NoticeBar from "./NoticeBar";
-import { countryConvert } from "../services/universitiesService"
+import * as Settings from "../../config/settings"
+import NoticeBar from "../utils/NoticeBar";
+import { countryConvert } from "../../services/universitiesService"
 
 // import material UI components
 import Box from "@mui/material/Box";
