@@ -8,6 +8,7 @@ import axios from "axios";
 import * as Settings from "../../config/settings"
 import NoticeBar from "../utils/NoticeBar";
 import { countryConvert } from "../../services/universitiesService"
+import * as Styles from "../../styles/styles"
 
 // import material UI components
 import Box from "@mui/material/Box";
@@ -148,30 +149,13 @@ const Universities = () => {
         }
     }
 
-    // CSS style for title
-    const titleStyle = {
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        zIndex: 1,
-        color: "#fff",
-        transform: "translateX(-50%) translateY(-50%)",
-        letterSpacing: "10px",
-    }
-
-    // CSS style for the title of items
-    const itemStyle = {
-        fontSize: 12,
-        fontStyle: "italic",
-    }
-
     return (
         <Box sx={{ width: "100%" }}>
 
             {/* Banner and title */}
             <Box sx={{ width: "100%", position: "relative" }}>
                 <img src={BannerPicture} alt="banner" style={{ width: "100%" }} />
-                <Typography variant="h1" component="div" sx={titleStyle}>
+                <Typography variant="h1" component="div" sx={Styles.titleStyle}>
                     UNIVERSITIES
                 </Typography>
             </Box>
@@ -225,7 +209,7 @@ const Universities = () => {
                                             {university.name}
                                         </Typography>
                                         <br />
-                                        <Typography sx={itemStyle} color="text.secondary">
+                                        <Typography sx={Styles.itemStyle} color="text.secondary">
                                             Country
                                         </Typography>
                                         <Typography variant="body1" gutterBottom>
@@ -234,8 +218,8 @@ const Universities = () => {
                                         {university["state-province"] ? (
                                             <>
                                                 <br />
-                                                <Typography sx={itemStyle} color="text.secondary">
-                                                    {"State\/Province"}
+                                                <Typography sx={Styles.itemStyle} color="text.secondary">
+                                                    {"State / Province"}
                                                 </Typography>
                                                 <Typography variant="body1" gutterBottom>
                                                     {university["state-province"]}
@@ -245,7 +229,7 @@ const Universities = () => {
                                             <></>
                                         )}
                                         <br />
-                                        <Typography sx={itemStyle} color="text.secondary">
+                                        <Typography sx={Styles.itemStyle} color="text.secondary">
                                             Domains
                                         </Typography>
                                         {university.domains.map((domain, index) => {
@@ -256,7 +240,7 @@ const Universities = () => {
                                             )
                                         })}
                                         <br />
-                                        <Typography sx={itemStyle} color="text.secondary">
+                                        <Typography sx={Styles.itemStyle} color="text.secondary">
                                             Web Pages
                                         </Typography>
                                         {university.web_pages.map((web, index) => {
