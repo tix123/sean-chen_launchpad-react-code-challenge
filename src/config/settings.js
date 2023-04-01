@@ -3,12 +3,14 @@
 export const POST_SERVER_URL = "https://jsonplaceholder.typicode.com/posts"
 export const COUNTRY_SERVER_URL = "https://countriesnow.space/api/v0.1/countries"
 export const UNIVERSITY_SERVER_URL = "http://universities.hipolabs.com/search"
+export const US_POSTAL_SERVER_URL = "https://api.zippopotam.us/us"
 
 // Messages
 export const ADD_SUCCESS = "Post Added Successfully"
 export const EDIT_SUCCESS ="Post Edited Successfully"
 export const DELETE_SUCCESS ="Post Deleted Successfully"
 export const NO_RESULT ="No Result Found"
+export const ZIP_FORMAT ="Please input 5 digits to search"
 
 // Alert severities
 export const ALERT_SUCCESS = "success"
