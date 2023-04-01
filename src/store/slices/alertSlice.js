@@ -1,21 +1,21 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice } from "@reduxjs/toolkit";
 
 export const alertSlice = createSlice({
-    name: "alert",
-    initialState: {
-        message: "",
-        severity: "error",
+  name: "alert",
+  initialState: {
+    message: "",
+    severity: "error",
+  },
+  reducers: {
+    setMessage: (state, action) => {
+      state.message = action.payload;
     },
-    reducers: {
-        setMessage: (state, action) => {
-            state.message = action.payload
-        },
-        setSeverity: (state, action) => {
-            state.severity = action.payload
-        }
-    }
-})
+    setSeverity: (state, action) => {
+      state.severity = action.payload;
+    },
+  },
+});
 
-export const { setMessage, setSeverity } = alertSlice.actions
+export const { setMessage, setSeverity } = alertSlice.actions;
 
-export default alertSlice.reducer
+export default alertSlice.reducer;
