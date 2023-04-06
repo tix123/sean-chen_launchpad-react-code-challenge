@@ -2,29 +2,27 @@ import React, { useEffect, useState } from "react";
 import BannerPicture from "../../images/sea.jpg";
 import { StatusCodes, getReasonPhrase } from "http-status-codes";
 import { useSelector, useDispatch } from "react-redux";
-import { setPostList, deletePost } from "../../store/slices/homeSlice";
+import {
+  deletePost,
+  fetchPostList,
+  searchPost,
+} from "../../store/slices/homeSlice";
 import { setMessage, setSeverity } from "../../store/slices/alertSlice";
 import axios from "axios";
 import InputForm from "../utils/InputForm";
+import PostCard from "../utils/PostCard";
+import Banner from "../utils/Banner";
 import NoticeBar from "../utils/NoticeBar";
 import * as Settings from "../../config/settings";
 import * as Styles from "../../styles/styles";
 
 // import material UI components
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import Stack from "@mui/material/Stack";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import IconButton from "@mui/material/IconButton";
 
 const Home = () => {
   // input form open/close control
@@ -60,37 +58,45 @@ const Home = () => {
 
   // Redux state setup
   const postList = useSelector((state) => state.home.postList);
+  const apiStatus = useSelector((state) => state.home.status);
+  const apiError = useSelector((state) => state.home.error);
   const alert = useSelector((state) => state.alert);
   const dispatch = useDispatch();
 
-  // Get post list (only once)
-  useEffect(() => {
-    fetchPostList();
-  }, []);
+  console.log("apiStatus", apiStatus);
+  console.log("apiError", apiError);
 
-  // Get post list and set data to Redux
-  const fetchPostList = async () => {
-    await axios
-      .get(Settings.POST_SERVER_URL + "?_start=0&_limit=20")
-      .then(function (res) {
-        // handle success
-        if (res.status === StatusCodes.OK) {
-          dispatch(setPostList(res.data));
-        } else {
-          let reason = getReasonPhrase(res.status);
-          dispatch(setMessage(reason));
-          dispatch(setSeverity(Settings.ALERT_ERROR));
-          handleBarOpen();
-        }
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-        dispatch(setMessage(error.message));
+  // Handle API response
+  useEffect(() => {
+    switch (apiStatus) {
+      case Settings.API_IDLE:
+        dispatch(fetchPostList());
+        break;
+
+      case Settings.API_FAILED:
+        dispatch(setMessage(apiError));
         dispatch(setSeverity(Settings.ALERT_ERROR));
         handleBarOpen();
-      });
-  };
+        break;
+
+      case Settings.API_ADD_POST_SUCCESSED:
+        dispatch(setMessage(Settings.ADD_SUCCESS));
+        dispatch(setSeverity(Settings.ALERT_SUCCESS));
+        handleDialogClose();
+        handleBarOpen();
+        break;
+
+      case Settings.API_EDIT_POST_SUCCESSED:
+        dispatch(setMessage(Settings.EDIT_SUCCESS));
+        dispatch(setSeverity(Settings.ALERT_SUCCESS));
+        handleDialogClose();
+        handleBarOpen();
+        break;
+
+      default:
+        break;
+    }
+  }, [dispatch, apiStatus, apiError]);
 
   // Edit function
   const handleEdit = (post) => {
@@ -111,37 +117,6 @@ const Home = () => {
     setDialogTitle(Settings.ADD_TITLE);
     setIsAddPost(true);
     handleDialogOpen();
-  };
-
-  // Search function
-  const handleSearch = async (id) => {
-    await axios
-      .get(Settings.POST_SERVER_URL + "/" + id)
-      .then(function (res) {
-        // handle success
-        if (res.status === StatusCodes.OK) {
-          // If the data is an array, set it to redux
-          if (Array.isArray(res.data)) {
-            dispatch(setPostList(res.data));
-          } else {
-            let newList = [];
-            newList.push(res.data);
-            dispatch(setPostList(newList));
-          }
-        } else {
-          let reason = getReasonPhrase(res.status);
-          dispatch(setMessage(reason));
-          dispatch(setSeverity(Settings.ALERT_ERROR));
-          handleBarOpen();
-        }
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-        dispatch(setMessage(error.message));
-        dispatch(setSeverity(Settings.ALERT_ERROR));
-        handleBarOpen();
-      });
   };
 
   // Delete function
@@ -175,12 +150,7 @@ const Home = () => {
   return (
     <Box sx={{ width: "100%" }}>
       {/* Banner and title */}
-      <Box sx={{ width: "100%", position: "relative" }}>
-        <img src={BannerPicture} alt="banner" style={{ width: "100%" }} />
-        <Typography variant="h1" component="div" sx={Styles.titleStyle}>
-          HOME
-        </Typography>
-      </Box>
+      <Banner bannerPicture={BannerPicture} bannerTitle={Settings.HOME_TITLE} />
 
       {/* Search field and add button */}
       <Box sx={{ width: "90%", margin: "20px auto" }}>
@@ -195,7 +165,7 @@ const Home = () => {
                   </InputAdornment>
                 ),
               }}
-              onChange={(e) => handleSearch(e.target.value)}
+              onChange={(e) => dispatch(searchPost(e.target.value))}
             />
           </Grid>
           <Grid item>
@@ -216,62 +186,11 @@ const Home = () => {
           {postList.map((post, index) => {
             return (
               <Grid item lg={3} md={4} sm={6} xs={12} key={index}>
-                <Card sx={{ background: "#eee" }}>
-                  <CardContent sx={{ height: 400 }}>
-                    <Stack spacing={5} direction="row">
-                      <Box>
-                        <Typography
-                          sx={Styles.itemStyle}
-                          color="text.secondary"
-                        >
-                          POST ID
-                        </Typography>
-                        <Typography variant="h4" gutterBottom>
-                          {post.id}
-                        </Typography>
-                      </Box>
-                      <Box>
-                        <Typography
-                          sx={Styles.itemStyle}
-                          color="text.secondary"
-                        >
-                          USER ID
-                        </Typography>
-                        <Typography variant="h4" gutterBottom>
-                          {post.userId}
-                        </Typography>
-                      </Box>
-                    </Stack>
-                    <br />
-                    <Typography sx={Styles.itemStyle} color="text.secondary">
-                      TITLE
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                      {post.title}
-                    </Typography>
-                    <br />
-                    <Typography sx={Styles.itemStyle} color="text.secondary">
-                      BODY
-                    </Typography>
-                    <Typography variant="body1" gutterBottom>
-                      {post.body}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Stack
-                      direction="row"
-                      justifyContent="flex-end"
-                      sx={{ width: "100%" }}
-                    >
-                      <IconButton onClick={() => handleEdit(post)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton onClick={() => handleDelete(post.id)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </Stack>
-                  </CardActions>
-                </Card>
+                <PostCard
+                  post={post}
+                  handleEdit={handleEdit}
+                  handleDelete={handleDelete}
+                />
               </Grid>
             );
           })}
