@@ -24,3 +24,14 @@ export const EDIT_TITLE = "EDIT A POST";
 
 // Pagination setup
 export const DATA_PER_PAGE = 10;
+
+// banner titles
+export const HOME_TITLE = "HOME";
+
+// API status
+export const API_IDLE = "idle";
+export const API_SUCCESSED = "successed";
+export const API_LOADING = "loading";
+export const API_FAILED = "fialed";
+export const API_ADD_POST_SUCCESSED = "add post successed";
+export const API_EDIT_POST_SUCCESSED = "edit post successed";
