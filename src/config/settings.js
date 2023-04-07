@@ -27,6 +27,7 @@ export const DATA_PER_PAGE = 10;
 
 // banner titles
 export const HOME_TITLE = "HOME";
+export const UNIVERSITIES_TITLE = "UNIVERSITIES";
 
 // API status
 export const API_IDLE = "idle";
