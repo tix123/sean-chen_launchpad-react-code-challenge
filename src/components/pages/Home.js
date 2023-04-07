@@ -63,9 +63,6 @@ const Home = () => {
   const alert = useSelector((state) => state.alert);
   const dispatch = useDispatch();
 
-  console.log("apiStatus", apiStatus);
-  console.log("apiError", apiError);
-
   // Handle API response
   useEffect(() => {
     switch (apiStatus) {
