@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BannerPicture from "../../images/postal.jpg";
-import { StatusCodes, getReasonPhrase } from "http-status-codes";
 import { useSelector, useDispatch } from "react-redux";
-import { setPostalData } from "../../store/slices/postalSlice";
+import { searchPostal } from "../../store/slices/postalSlice";
 import { setMessage, setSeverity } from "../../store/slices/alertSlice";
-import axios from "axios";
 import * as Settings from "../../config/settings";
 import NoticeBar from "../utils/NoticeBar";
+import Banner from "../utils/Banner";
 import * as Styles from "../../styles/styles";
 
 // import material UI components
@@ -35,8 +34,19 @@ const Postal = () => {
 
   // Redux state setup
   const postalData = useSelector((state) => state.postal.postalData);
+  const apiStatus = useSelector((state) => state.postal.status);
+  const apiError = useSelector((state) => state.postal.error);
   const alert = useSelector((state) => state.alert);
   const dispatch = useDispatch();
+
+  // Handle API response
+  useEffect(() => {
+    if (apiStatus === Settings.API_FAILED) {
+      dispatch(setMessage(apiError));
+      dispatch(setSeverity(Settings.ALERT_ERROR));
+      handleBarOpen();
+    }
+  }, [dispatch, apiStatus, apiError]);
 
   // Search function
   const handleSearch = async (zip) => {
@@ -46,38 +56,17 @@ const Postal = () => {
       dispatch(setSeverity(Settings.ALERT_ERROR));
       handleBarOpen();
     } else {
-      await axios
-        .get(Settings.US_POSTAL_SERVER_URL + "/" + zip)
-        .then(function (res) {
-          // handle success
-          if (res.status === StatusCodes.OK) {
-            dispatch(setPostalData(res.data));
-          } else {
-            let reason = getReasonPhrase(res.status);
-            dispatch(setMessage(reason));
-            dispatch(setSeverity(Settings.ALERT_ERROR));
-            handleBarOpen();
-          }
-        })
-        .catch(function (error) {
-          // handle error
-          console.log(error);
-          dispatch(setMessage(error.message));
-          dispatch(setSeverity(Settings.ALERT_ERROR));
-          handleBarOpen();
-        });
+      dispatch(searchPostal(zip));
     }
   };
 
   return (
     <Box sx={{ width: "100%" }}>
       {/* Banner and title */}
-      <Box sx={{ width: "100%", position: "relative" }}>
-        <img src={BannerPicture} alt="banner" style={{ width: "100%" }} />
-        <Typography variant="h1" component="span" sx={Styles.titleStyle}>
-          POSTAL LOOKUP
-        </Typography>
-      </Box>
+      <Banner
+        bannerPicture={BannerPicture}
+        bannerTitle={Settings.POSTAL_TITLE}
+      />
 
       {/* search bar */}
       <Box sx={{ width: "90%", margin: "20px auto" }}>
@@ -139,8 +128,8 @@ const Postal = () => {
             {/* Places in this postal code */}
             {postalData.places.map((place, index) => {
               return (
-                <Grid item>
-                  <Grid container rowSpacing={2} columnSpacing={20} key={index}>
+                <Grid item key={index}>
+                  <Grid container rowSpacing={2} columnSpacing={20}>
                     <Grid item>
                       <Typography sx={Styles.itemStyle} color="text.secondary">
                         PLACE NAME
